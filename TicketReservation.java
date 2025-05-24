@@ -2,14 +2,17 @@
 // Ticket Class
 // =============================
 class Ticket {
+    // immutable variables
     private final int id;
     private final String event;
 
+    // constructor
     public Ticket(int id, String event) {
         this.id = id;
         this.event = event;
     }
 
+    // getters
     public int getId() { return id; }
     public String getEvent() { return event; }
 }
@@ -20,11 +23,14 @@ class Ticket {
 class TicketPool {
     private int availableTickets;
 
+    // constructor
     public TicketPool(int totalTickets) {
         this.availableTickets = totalTickets;
     }
 
+    // synchronized method
     public synchronized Ticket reserveTicket(String customerName) {
+        // guarded block
         while (availableTickets <= 0) {
             try {
                 wait();
@@ -32,6 +38,7 @@ class TicketPool {
                 Thread.currentThread().interrupt();
             }
         }
+        // main program function (reserve a ticket)
         availableTickets--;
         System.out.println(customerName + " reserved a ticket. Tickets left: " + availableTickets);
         return new Ticket(availableTickets, "Concert");
@@ -45,11 +52,13 @@ class Customer implements Runnable {
     private final String customerName;
     private TicketPool ticketPool;
 
+    // constructor
     public Customer (String customerName, TicketPool ticketPool) {
         this.customerName = customerName;
         this.ticketPool = ticketPool;
     }
 
+    // Runnable interface's run() method
     @Override
     public void run() {
         ticketPool.reserveTicket(customerName);
